@@ -1,0 +1,152 @@
+/*Name: ------- --------
+ * Student #: -------
+ * Assignment 4
+ * Program Description: This program uses an array to sort names into "seats", represented by the numbers 0-9 in the array.
+ * The Main method uses a do-while loop to get a command from the user. This is in turn used in a switch, which uses the input 
+ * to call upon one of three methods. This will continue until the user signals the program to terminate with the command 'Q'.
+ * 
+ * Data Dictionary:
+ * uCommand - User command
+ * SeatAssign - Seat assignment array
+ * freeSeat - Used to relay what seat, if any, are available
+ * cSeat - Used to relay what seat, if any, is the customer's
+ * cName - Customer name
+ * x - Temporary counter for array position
+ * 
+ */
+using System;
+
+public static class SeatCheck
+{
+    //Main Method
+    public static void Main()
+    {
+        //Variable Declarations
+    char uCommand;
+    string[] SeatAssign = { "", "", "", "", "", "", "", "", "", "" };
+        
+        //Introduction to Program
+    Console.WriteLine("Welcome to Air Canada's automated reservation system!");
+    Console.WriteLine("Please input a command.'B' to book a seat, 'C' to cancel a seat, 'P' to print assigned seats");
+    Console.WriteLine("or 'Q' to quit the program");
+    //Do-While Loop
+        do
+    {
+         double    //Command Collector
+        Console.WriteLine("Please enter a command.");
+        uCommand = char.ToUpper(Convert.ToChar(Console.ReadLine()));
+       
+            //No-Input Failsafe
+        if ((uCommand != 'B') && (uCommand != 'C') && (uCommand != 'P') && (uCommand != 'Q'))
+        {
+            Console.WriteLine("Please enter a command.");
+        }
+        else
+            //Switch Statement
+            switch (uCommand)
+            {
+                case 'B':
+                    Booking(SeatAssign);
+                    break;
+                case 'C':
+                    Cancel(SeatAssign);
+                    break;
+                case 'P':
+                    Printseats(SeatAssign);
+                    break;
+            }
+
+        }
+        while (uCommand != 'Q');
+    Console.ReadLine();
+    }
+
+    //Empty Seat Finding Method
+    public static int FindEmptySeat(string [] SeatAssign)
+    {
+        int freeSeat = 0;
+
+        //Empty Seat Search
+        for (int x = 0; x < SeatAssign.Length; ++x)
+        {
+            if ("" == SeatAssign[x])
+            {
+                freeSeat = x;
+                break;
+            }
+            else
+                freeSeat = -1;
+        }
+        return freeSeat;
+    }
+
+    //Customer Seat Finder
+    public static int FindCustomerSeat(string []SeatAssign, string cName)
+    {
+        int cSeat = 0;
+        //Array Search
+            for (int x = 0; x < SeatAssign.Length; ++x)
+        {
+            if (cName == SeatAssign[x])
+            {
+                SeatAssign[x] = "";
+                cSeat = x;
+                break;
+            }
+            else
+                cSeat = -1;
+            } 
+        return cSeat;
+    }
+
+    //Booking Method
+    public static void Booking(string [] SeatAssign)
+    {
+        int cSeat;
+        string cName;
+        
+        //Name Retriever
+        Console.WriteLine("What name is the seat being booked under?");
+        cName = Console.ReadLine();
+        cName = cName.ToUpper();
+        cSeat = FindEmptySeat(SeatAssign);
+        
+        //Empty Seat Announcer
+        if (cSeat > -1)
+        {
+            SeatAssign[cSeat] = cName;
+            Console.WriteLine("Seat {0} has been booked under the name {1}.", cSeat, cName);
+        }
+        else
+            Console.WriteLine("We are sorry {0}, but the plane is full.", cName);
+    }
+
+    //Cancel Method
+    public static void Cancel(string [] SeatAssign)
+    {
+        int cSeat;
+        string cName;
+
+        //Name Prompt
+        Console.WriteLine("Please enter a name.");
+        cName = Console.ReadLine();
+        cName = cName.ToUpper();
+        cSeat = FindCustomerSeat(SeatAssign, cName);
+
+        //Cancellation Confirmation
+        if (cSeat <= -1)
+            Console.WriteLine("We are sorry {0}, but you have not booked a seat with Air Canada.", cName);
+        else
+            Console.WriteLine("Your seat has been cancelled");
+    }
+
+    //Filled Seat Printer
+    public static void Printseats(string [] SeatAssign)
+    {
+        for (int x = 0; x < SeatAssign.Length; ++x)
+        {
+            if (SeatAssign[x] != "")
+                Console.WriteLine("Seat {0} has been booked for customer {1}", x, SeatAssign[x]);        
+        }
+    }
+}
